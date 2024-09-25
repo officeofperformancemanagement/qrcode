@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html>
+    <head>
+        <style>
+            body {
+                max-width: 900px;
+                padding: 30px;
+                text-align: left;
+            }
+            #url {
+                margin-bottom: 25px;
+                width: 100%;
+            }
+            button {
+                background: chartreuse;
+                height: 35px;
+                margin-bottom: 25px;
+                margin-top: 25px;
+                width: 150px;
+            }
+        </style>
+        <script>
+            window.app = {
+                state: {
+                    created: false,
+                    url: null
+                }
+            };
+        </script>
+        <script src="./js/easy-file-saver.js"></script>
+        <script src="./js/qrcode.min.js"></script>
+    </head>
+    <body>
+        <div id="app">
+            <h1>QR Code Creator</h1>
+            <h2>Create a QR Code that never expires</h2>
+            <label for="url">URL</label>
+            <input type="text" id="url">
+            <button id="create" onclick="create()">Create</button>
+            <div id="results"></div>
+            <button id="download-image" onclick="download_image()" style="display: none">Download</button>
+        </div>
+        <script>
+            function create() {
+                console.log("starting create");
+                if (window.app.state.created === false) {
+                    let url = document.getElementById("url").value;
+                    console.log("url:", url);
+
+                    // accidental
+                    if (url.trim() === "") return;
+                    
+                    // accidental re-run
+                    if (url === app.state.url) {
+                        return;
+                    }
+
+                    window.app.state.url = url;
+
+                    if (window.app.state.url.startsWith("http") === false) {
+                        alert("url doesn't start with http");
+                        return;
+                    }
+
+                    window.app.state.created = true;
+                    document.getElementById("create").style.display = "none";
+
+                    document.getElementById("url").disabled = true;
+
+                    new QRCode(document.getElementById("results"), window.app.state.url);
+                    document.getElementById("download-image").style.display = "block";
+                }
+            }
+
+            document.getElementById("url").addEventListener("change", create);
+
+            function download_image() {
+                const img = document.querySelector("#results img");
+                saveFile({ data: img, debug: true, filename: "qrcode.png" })
+            }
+        </script>
+    </body>
+</html>

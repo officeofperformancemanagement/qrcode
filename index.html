@@ -57,7 +57,7 @@
 
                     window.app.state.url = url;
 
-                    if (window.app.state.url.startsWith("http") === false) {
+                    if (window.app.state.url.startsWith("http") === false && window.app.state.url.startsWith("mailto:") === false && window.app.state.url.startsWith("tel:") === false) {
                         alert("url doesn't start with http");
                         return;
                     }
